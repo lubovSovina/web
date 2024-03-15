@@ -1,16 +1,22 @@
 from flask import Flask, render_template, redirect, request, abort, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_restful import Api
 from data import db_session, news_api
 from data.news import News
 from data.users import User
 from forms.user import RegisterForm, LoginForm
 from forms.news import NewsForm
+from data.news_resources import NewsListResource, NewsResource
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
+api.add_resource(NewsListResource, '/api/v2/news')
+api.add_resource(NewsResource, '/api/v2/news/<int:news_id>')
 
 @login_manager.user_loader
 def load_user(user_id):
